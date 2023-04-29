@@ -1,35 +1,32 @@
-
 import requests
 
-data = requests.get('https://swapi.dev/api/films').json( )
+data = requests.get('https://swapi.dev/api/films').json()
 
-peliculas = 0
+count_arid_planets = 0
 for i in data['results']:
-  for j in i['planets']:
-    r = requests.get(j).json( )
-    if r['climate'] == 'arid':
-      peliculas += 1
-      break
+    for j in i['planets']:
+        planet_data = requests.get(j).json()
+        if planet_data['climate'] == 'arid':
+            count_arid_planets += 1
+            break
 
-
-wookies = 0
+count_wookies = 0
 for i in data['results'][-1]['characters']:
-  r = requests.get(i).json()
-  if 'https://swapi.dev/api/species/3/' in r['species']:
-    wookies += 1
+    character_data = requests.get(i).json()
+    if 'https://swapi.dev/api/species/3/' in character_data['species']:
+        count_wookies += 1
 
-
-aeronave = {'nombre':'', 'largo':0}
-data = requests.get('https://swapi.dev/api/starships/').json( )
+largest_starship = {'name': '', 'length': 0}
+data = requests.get('https://swapi.dev/api/starships/').json()
 for i in data['results']:
-  largo = float(i['length'].replace(',','.'))
-  if aeronave['largo'] < largo:
-    aeronave['nombre'] = i['name']
-    aeronave['largo'] = largo
+    length = float(i['length'].replace(',', '.'))
+    if largest_starship['length'] < length:
+        largest_starship['name'] = i['name']
+        largest_starship['length'] = length
 
-print('¿En cuántas películas aparecen planetas cuyo clima sea árido?')
-print(peliculas)
-print('¿Cuántos Wookies aparecen en la sexta película?')
-print(wookies)
-print('¿Cuál es el nombre de la aeronave más grande en toda la saga?')
-print(aeronave)
+print('How many movies feature planets with arid climate?')
+print(count_arid_planets)
+print('How many Wookies appear in the sixth movie?')
+print(count_wookies)
+print('What is the name of the largest starship in the entire saga?')
+print(largest_starship['name'])
